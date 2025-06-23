@@ -1,30 +1,7 @@
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+<h1>Registreren</h1>
 
-#[Route('/register', name: 'app_register')]
-public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
-{
-    $user = new User();
-    $form = $this->createForm(RegistrationFormType::class, $user);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $user->setPassword(
-            $passwordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            )
-        );
-        $user->setRoles(['ROLE_USER']);
-        $em->persist($user);
-        $em->flush();
-
-        return $this->redirectToRoute('app_login');
-    }
-
-    return $this->render('registration/register.html.twig', [
-        'registrationForm' => $form->createView(),
-    ]);
-}
+{{ form_start(registrationForm) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.plainPassword) }}
+    <button class="btn btn-primary">Registreer</button>
+{{ form_end(registrationForm) }}
