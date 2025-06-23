@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bestelling Beheer - Admin{% endblock %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Bestelling Beheer</h1>
+                <div>
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">Terug naar Home</a>
+                </div>
+            </div>
+
+            {# Flash messages #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% if bestellingen|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Bestelling #</th>
+                                <th>Klantnaam</th>
+                                <th>Datum</th>
+                                <th>Aantal Producten</th>
+                                <th>Totaalprijs</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bestelling in bestellingen %}
+                                <tr>
+                                    <td><strong>#{{ bestelling.id }}</strong></td>
+                                    <td>{{ bestelling.klantnaam }}</td>
+                                    <td>{{ bestelling.datum|date('d-m-Y H:i') }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ bestelling.producten|length }} product(en)</span>
+                                    </td>
+                                    <td class="text-success">
+                                        {% set total = 0 %}
+                                        {% for product in bestelling.producten %}
+                                            {% set total = total + product.prijs %}
+                                        {% endfor %}
+                                        <strong>€{{ total|number_format(2, ',', '.') }}</strong>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_bestelling_show', {'id': bestelling.id}) }}" class="btn btn-sm btn-outline-primary">Details</a>
+                                            <form method="post" action="{{ path('app_bestelling_delete', {'id': bestelling.id}) }}" class="d-inline" data-turbo="false" onsubmit="return confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bestelling.id) }}">
+                                                <button class="btn btn-sm btn-danger" type="submit">Verwijder</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {# Uitklapbare details #}
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="collapse" id="collapse{{ bestelling.id }}">
+                                            <div class="card card-body bg-light">
+                                                <h6>Bestelde Producten:</h6>
+                                                <ul class="list-group list-group-flush">
+                                                    {% for product in bestelling.producten %}
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                                            {{ product.naam }}
+                                                            <span class="text-success">€{{ product.prijs|number_format(2, ',', '.') }}</span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-info mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ bestelling.id }}">
+                                            Toon/Verberg Producten
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    <h4>Geen bestellingen gevonden</h4>
+                    <p>Er zijn nog geen bestellingen geplaatst in de webshop.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 

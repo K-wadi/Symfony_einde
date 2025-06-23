@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product Beheer - Admin{% endblock %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Product Beheer</h1>
+                <div>
+                    <a href="{{ path('app_product_new') }}" class="btn btn-success">Nieuw Product</a>
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">Terug naar Home</a>
+                </div>
+            </div>
+
+            {# Flash messages #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% if products|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Naam</th>
+                                <th>Prijs</th>
+                                <th>Beschrijving</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ product.id }}</td>
+                                    <td><strong>{{ product.naam }}</strong></td>
+                                    <td class="text-success">€{{ product.prijs|number_format(2, ',', '.') }}</td>
+                                    <td>
+                                        {% if product.beschrijving %}
+                                            {{ product.beschrijving|slice(0, 50) }}
+                                            {% if product.beschrijving|length > 50 %}...{% endif %}
+                                        {% else %}
+                                            <em class="text-muted">Geen beschrijving</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">Bekijk</a>
+                                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-sm btn-warning">Bewerk</a>
+                                            <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" class="d-inline" data-turbo="false" onsubmit="return confirm('Weet je zeker dat je dit product wilt verwijderen?')">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                                <button class="btn btn-sm btn-danger" type="submit">Verwijder</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    <h4>Geen producten gevonden</h4>
+                    <p>Er zijn nog geen producten toegevoegd aan de webshop.</p>
+                    <a href="{{ path('app_product_new') }}" class="btn btn-success">Voeg het eerste product toe</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 

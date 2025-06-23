@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bestelling #{{ bestelling.id }} - Admin{% endblock %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Bestelling #{{ bestelling.id }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Klantgegevens</h5>
+                            <p><strong>Naam:</strong> {{ bestelling.klantnaam }}</p>
+                            <p><strong>Datum:</strong> {{ bestelling.datum|date('d-m-Y H:i:s') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Bestelling Info</h5>
+                            <p><strong>Bestelling ID:</strong> #{{ bestelling.id }}</p>
+                            <p><strong>Aantal producten:</strong> {{ bestelling.producten|length }}</p>
+                        </div>
+                    </div>
+
+                    <h5>Bestelde Producten</h5>
+                    {% if bestelling.producten|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Beschrijving</th>
+                                        <th class="text-end">Prijs</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set total = 0 %}
+                                    {% for product in bestelling.producten %}
+                                        <tr>
+                                            <td><strong>{{ product.naam }}</strong></td>
+                                            <td>
+                                                {% if product.beschrijving %}
+                                                    {{ product.beschrijving|slice(0, 100) }}
+                                                    {% if product.beschrijving|length > 100 %}...{% endif %}
+                                                {% else %}
+                                                    <em class="text-muted">Geen beschrijving</em>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end text-success">€{{ product.prijs|number_format(2, ',', '.') }}</td>
+                                        </tr>
+                                        {% set total = total + product.prijs %}
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-dark">
+                                        <th colspan="2">Totaal</th>
+                                        <th class="text-end text-success">€{{ total|number_format(2, ',', '.') }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            Deze bestelling bevat geen producten.
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{{ path('app_bestelling_admin') }}" class="btn btn-outline-secondary">Terug naar Overzicht</a>
+                        
+                        {# Delete knop #}
+                        <form method="post" action="{{ path('app_bestelling_delete', {'id': bestelling.id}) }}" class="d-inline" data-turbo="false" onsubmit="return confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bestelling.id) }}">
+                            <button class="btn btn-danger" type="submit">Bestelling Verwijderen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 

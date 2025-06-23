@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nieuwe Bestelling - Webshop{% endblock %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Nieuwe Bestelling Plaatsen</h3>
+                </div>
+                <div class="card-body">
+                    {# Flash messages #}
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+                    
+                    <div class="mb-4">
+                        {{ form_label(form.klantnaam, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.klantnaam, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.klantnaam) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.producten, null, {'label_attr': {'class': 'form-label h5'}}) }}
+                        <div class="border rounded p-3 bg-light">
+                            {% for child in form.producten %}
+                                <div class="form-check mb-2">
+                                    {{ form_widget(child, {'attr': {'class': 'form-check-input product-checkbox', 'data-price': child.vars.data ? child.vars.data.prijs : '0'}}) }}
+                                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.producten) }}
+                    </div>
+
+                    {# Totaalprijs berekening #}
+                    <div class="mb-4">
+                        <div class="card bg-info bg-opacity-10">
+                            <div class="card-body">
+                                <h5 class="card-title">Totaalprijs</h5>
+                                <p class="card-text fs-4 text-success" id="totalPrice">€0,00</p>
+                                <small class="text-muted">Selecteer producten om de totaalprijs te zien</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success btn-lg'}}) }}
+                    </div>
+
+                    {{ form_end(form) }}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_product_index') }}" class="btn btn-outline-secondary">Terug naar Producten</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# JavaScript voor totaalprijs berekening #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    const totalPriceElement = document.getElementById('totalPrice');
+    
+    function updateTotalPrice() {
+        let total = 0;
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                const price = parseFloat(checkbox.dataset.price);
+                if (!isNaN(price)) {
+                    total += price;
+                }
+            }
+        });
+        
+        totalPriceElement.textContent = '€' + total.toFixed(2).replace('.', ',');
+    }
+    
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateTotalPrice);
+    });
+    
+    // Initial calculation
+    updateTotalPrice();
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 
