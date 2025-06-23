@@ -1,11 +1,24 @@
-#[Route('/bestellingen', name: 'order_overview')]
-public function index(OrderRepository $repo): Response
+#[Route('/producten', name: 'product_list')]
+public function index(ProductRepository $repo): Response
 {
-    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    $products = $repo->findAll();
 
-    $orders = $repo->findAll();
-
-    return $this->render('order/index.html.twig', [
-        'orders' => $orders,
+    return $this->render('product/index.html.twig', [
+        'products' => $products,
     ]);
 }
+
+<h1>Boeken</h1>
+<div class="row">
+    {% for product in products %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <img src="{{ product.imageUrl }}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">€{{ product.price }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
