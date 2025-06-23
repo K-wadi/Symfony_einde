@@ -1,180 +1,181 @@
-namespace App\Entity;
+namespace App\Controller;
 
-use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
+use App\Form\RegistrationFormType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class RegistrationController extends AbstractController
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[Route('/register', name: 'app_register')]
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $hasher,
+        EntityManagerInterface $em
+    ): Response {
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
 
-    #[ORM\Column(length: 180, unique: true)]
-    private string $email;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($hasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            ));
+            $user->setRoles(['ROLE_USER']);
 
-    #[ORM\Column(type: 'json')]
-    private array $roles = [];
+            $em->persist($user);
+            $em->flush();
 
-    #[ORM\Column]
-    private string $password;
+            return $this->redirectToRoute('app_login');
+        }
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Purchase::class)]
-    private $purchases;
-
-    // Getters & setters...
-
-    public function getUserIdentifier(): string { return $this->email; }
-    public function getRoles(): array { return $this->roles; }
-    public function getPassword(): string { return $this->password; }
-    public function eraseCredentials(): void {}
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
 }
 
-namespace App\Entity;
+namespace App\Controller;
 
-use App\Repository\ProductRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-class Product
+class SecurityController extends AbstractController
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column]
-    private float $price;
-
-    #[ORM\Column(length: 255)]
-    private string $imageUrl;
-
-    #[ORM\ManyToMany(targetEntity: Purchase::class, mappedBy: 'products')]
-    private $purchases;
-
-    // Getters & setters...
-}
-
-namespace App\Entity;
-
-use App\Repository\PurchaseRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
-#[ORM\Entity(repositoryClass: PurchaseRepository::class)]
-class Purchase
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $orderDate;
-
-    #[ORM\ManyToOne(inversedBy: 'purchases')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'purchases')]
-    #[ORM\JoinTable(name: 'purchase_product')]
-    private Collection $products;
-
-    public function __construct()
+    #[Route('/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $this->products = new ArrayCollection();
+        return $this->render('security/login.html.twig', [
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+        ]);
     }
 
-    // Getters & setters...
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(): void {}
 }
 
-namespace App\Entity;
+namespace App\Controller;
 
+use App\Repository\ProductRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class ProductController extends AbstractController
+{
+    #[Route('/producten', name: 'product_index')]
+    public function index(ProductRepository $repo): Response
+    {
+        return $this->render('product/index.html.twig', [
+            'products' => $repo->findAll(),
+        ]);
+    }
+}
+
+namespace App\Controller;
+
+use App\Entity\Product;
+use App\Entity\Purchase;
+use App\Repository\PurchaseRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+
+class PurchaseController extends AbstractController
+{
+    #[Route('/bestel/{id}', name: 'purchase_create')]
+    public function bestel(
+        Product $product,
+        EntityManagerInterface $em,
+        Security $security
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $security->getUser();
+        $purchase = new Purchase();
+        $purchase->setOrderDate(new \DateTimeImmutable());
+        $purchase->setUser($user);
+        $purchase->addProduct($product);
+
+        $em->persist($purchase);
+        $em->flush();
+
+        return $this->redirectToRoute('purchase_index');
+    }
+
+    #[Route('/bestellingen', name: 'purchase_index')]
+    public function index(PurchaseRepository $repo): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        return $this->render('purchase/index.html.twig', [
+            'purchases' => $repo->findAll(),
+        ]);
+    }
+
+    #[Route('/mijn-bestellingen', name: 'purchase_user')]
+    public function myOrders(PurchaseRepository $repo, Security $security): Response
+    {
+        $user = $security->getUser();
+        $orders = $repo->findBy(['user' => $user]);
+
+        return $this->render('purchase/my_orders.html.twig', [
+            'purchases' => $orders,
+        ]);
+    }
+}
+
+namespace App\Controller;
+
+use App\Entity\Student;
+use App\Form\StudentType;
 use App\Repository\StudentRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-#[ORM\Entity(repositoryClass: StudentRepository::class)]
-class Student
+#[Route('/student')]
+class StudentController extends AbstractController
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[Route('/', name: 'student_index')]
+    public function index(StudentRepository $repo): Response
+    {
+        return $this->render('student/index.html.twig', [
+            'students' => $repo->findAll(),
+        ]);
+    }
 
-    #[ORM\Column(length: 255)]
-    private string $firstName;
+    #[Route('/nieuw', name: 'student_new')]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
 
-    #[ORM\Column(length: 255)]
-    private string $lastName;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($student);
+            $em->flush();
 
-    #[ORM\Column(length: 255)]
-    private string $email;
+            return $this->redirectToRoute('student_index');
+        }
 
-    #[ORM\Column]
-    private int $age;
+        return $this->render('student/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
-    #[ORM\ManyToOne]
-    private ?SchoolGroup $schoolGroup = null;
-
-    // Getters & setters...
-}
-
-namespace App\Entity;
-
-use App\Repository\SchoolGroupRepository;
-use Doctrine\ORM\Mapping as ORM;
-
-#[ORM\Entity(repositoryClass: SchoolGroupRepository::class)]
-class SchoolGroup
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column]
-    private int $year;
-
-    #[ORM\Column(length: 255)]
-    private string $teacher;
-
-    #[ORM\OneToMany(mappedBy: 'schoolGroup', targetEntity: Student::class)]
-    private $students;
-
-    // Getters & setters...
-}
-
-namespace App\Entity;
-
-use App\Repository\VacationRepository;
-use Doctrine\ORM\Mapping as ORM;
-
-#[ORM\Entity(repositoryClass: VacationRepository::class)]
-class Vacation
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $startDate;
-
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $endDate;
-
-    // Getters & setters...
+    // ... show/edit/delete routes kun je toevoegen indien gewenst
 }
