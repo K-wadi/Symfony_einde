@@ -1,17 +1,11 @@
-<h1>Inloggen</h1>
+#[Route('/bestellingen', name: 'order_overview')]
+public function index(OrderRepository $repo): Response
+{
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-{% if error %}
-    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
+    $orders = $repo->findAll();
 
-<form method="post">
-    <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="email" value="{{ last_username }}" name="email" id="email" required autofocus class="form-control">
-    </div>
-    <div class="form-group">
-        <label for="password">Wachtwoord</label>
-        <input type="password" name="password" id="password" required class="form-control">
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Inloggen</button>
-</form>
+    return $this->render('order/index.html.twig', [
+        'orders' => $orders,
+    ]);
+}
