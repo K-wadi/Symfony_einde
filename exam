@@ -1,7 +1,17 @@
-<h1>Registreren</h1>
+<h1>Inloggen</h1>
 
-{{ form_start(registrationForm) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword) }}
-    <button class="btn btn-primary">Registreer</button>
-{{ form_end(registrationForm) }}
+{% if error %}
+    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+<form method="post">
+    <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" value="{{ last_username }}" name="email" id="email" required autofocus class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password">Wachtwoord</label>
+        <input type="password" name="password" id="password" required class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Inloggen</button>
+</form>
