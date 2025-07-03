@@ -1,144 +1,140 @@
-namespace App\Form;
+CREATE DATABASE laptops4u;
 
-use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+USE laptops4u;
 
-class RegistrationFormType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('email', EmailType::class)
-            ->add('plainPassword', PasswordType::class, [
-                'label' => 'Wachtwoord',
-                'mapped' => false,
-                'constraints' => [
-                    new NotBlank(['message' => 'Wachtwoord is verplicht.']),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Het wachtwoord moet minimaal {{ limit }} tekens lang zijn.',
-                    ]),
-                ],
-            ]);
-    }
+CREATE TABLE laptops (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category VARCHAR(255),
+  merk VARCHAR(255),
+  type VARCHAR(255),
+  memory INT,
+  hd INT,
+  prijs DECIMAL(7,2)
+);
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(['data_class' => User::class]);
-    }
+<?php
+$conn = new mysqli("localhost", "root", "", "laptops4u");
+
+$result = $conn->query("SELECT * FROM laptops");
+echo "<table border='1'>
+<tr><th>category</th><th>merk</th><th>type</th><th>details</th><th>update</th><th>delete</th></tr>";
+
+while($row = $result->fetch_assoc()) {
+    echo "<tr>
+    <td>{$row['category']}</td>
+    <td>{$row['merk']}</td>
+    <td>{$row['type']}</td>
+    <td><a href='details.php?id={$row['id']}'>🔍</a></td>
+    <td><a href='update.php?id={$row['id']}'>✏️</a></td>
+    <td><a href='delete.php?id={$row['id']}'>🗑️</a></td>
+    </tr>";
 }
+echo "</table><br><a href='insert.php'>Insert new laptop</a>";
+?>
 
-namespace App\Form;
+<?php
+$errors = [];
+$category = $merk = $type = $memory = $hd = $prijs = "";
 
-use App\Entity\Product;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $category = $_POST["category"];
+  $merk = $_POST["merk"];
+  $type = $_POST["type"];
+  $memory = $_POST["memory"];
+  $hd = $_POST["hd"];
+  $prijs = $_POST["prijs"];
 
-class ProductType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('name', TextType::class)
-            ->add('price', MoneyType::class, ['currency' => 'EUR'])
-            ->add('imageUrl', TextType::class, ['label' => 'Afbeelding URL']);
-    }
+  if (!$category || !$merk || !$type || !$memory || !$hd || !$prijs) {
+    $errors[] = "Vul alle velden in.";
+  }
+  if (!ctype_digit($memory)) $errors[] = "Memory moet een geheel getal zijn.";
+  if (!ctype_digit($hd)) $errors[] = "HD moet een geheel getal zijn.";
+  if (!is_numeric($prijs)) $errors[] = "Prijs moet een getal zijn.";
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(['data_class' => Product::class]);
-    }
+  if (empty($errors)) {
+    $conn = new mysqli("localhost", "root", "", "laptops4u");
+    $stmt = $conn->prepare("INSERT INTO laptops (category, merk, type, memory, hd, prijs) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssiid", $category, $merk, $type, $memory, $hd, $prijs);
+    $stmt->execute();
+    header("Location: read.php");
+    exit;
+  }
 }
+?>
 
-namespace App\Form;
+<form method="post">
+<select name="category">
+  <option value="Ultrabooks">Ultrabooks</option>
+  <option value="Gaming Laptops">Gaming Laptops</option>
+  <option value="Chromebooks">Chromebooks</option>
+  <option value="2-in-1 Laptops">2-in-1 Laptops</option>
+  <option value="Zakelijke Laptops">Zakelijke Laptops</option>
+</select><br>
+<input name="merk" placeholder="Merk" value="<?= $merk ?>"><br>
+<input name="type" placeholder="Type" value="<?= $type ?>"><br>
+<input name="memory" placeholder="Memory" value="<?= $memory ?>"><br>
+<input name="hd" placeholder="HD" value="<?= $hd ?>"><br>
+<input name="prijs" placeholder="Prijs" value="<?= $prijs ?>"><br>
+<button type="submit">Insert</button>
+<a href="read.php">Back</a>
+</form>
 
-use App\Entity\Student;
-use App\Entity\SchoolGroup;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+<?php foreach ($errors as $error) echo "<p style='color:red'>$error</p>"; ?>
 
-class StudentType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('age', IntegerType::class)
-            ->add('schoolGroup', EntityType::class, [
-                'class' => SchoolGroup::class,
-                'choice_label' => 'name',
-                'label' => 'Klas',
-            ]);
-    }
+<?php
+$conn = new mysqli("localhost", "root", "", "laptops4u");
+$id = $_GET['id'];
+$result = $conn->query("SELECT * FROM laptops WHERE id = $id");
+$row = $result->fetch_assoc();
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(['data_class' => Student::class]);
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $category = $_POST["category"];
+  $merk = $_POST["merk"];
+  $type = $_POST["type"];
+  $memory = $_POST["memory"];
+  $hd = $_POST["hd"];
+  $prijs = $_POST["prijs"];
+  
+  $stmt = $conn->prepare("UPDATE laptops SET category=?, merk=?, type=?, memory=?, hd=?, prijs=? WHERE id=?");
+  $stmt->bind_param("sssiddi", $category, $merk, $type, $memory, $hd, $prijs, $id);
+  $stmt->execute();
+  header("Location: read.php");
+  exit;
 }
+?>
 
-namespace App\Form;
+<form method="post">
+<select name="category">
+  <?php foreach (["Ultrabooks", "Gaming Laptops", "Chromebooks", "2-in-1 Laptops", "Zakelijke Laptops"] as $cat): ?>
+    <option value="<?= $cat ?>" <?= $row['category'] == $cat ? 'selected' : '' ?>><?= $cat ?></option>
+  <?php endforeach ?>
+</select><br>
+<input name="merk" value="<?= $row['merk'] ?>"><br>
+<input name="type" value="<?= $row['type'] ?>"><br>
+<input name="memory" value="<?= $row['memory'] ?>"><br>
+<input name="hd" value="<?= $row['hd'] ?>"><br>
+<input name="prijs" value="<?= $row['prijs'] ?>"><br>
+<button type="submit">Update</button>
+<a href="read.php">Back</a>
+</form>
 
-use App\Entity\SchoolGroup;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+<?php
+$conn = new mysqli("localhost", "root", "", "laptops4u");
+$id = $_GET["id"];
+$result = $conn->query("SELECT * FROM laptops WHERE id = $id");
+$row = $result->fetch_assoc();
 
-class SchoolGroupType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('name', TextType::class)
-            ->add('year', IntegerType::class)
-            ->add('teacher', TextType::class);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(['data_class' => SchoolGroup::class]);
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $conn->query("DELETE FROM laptops WHERE id = $id");
+  header("Location: read.php");
+  exit;
 }
+?>
 
-namespace App\Form;
+<p>Verwijder de volgende rij?</p>
+<p><?= $row["category"] ?> - <?= $row["merk"] ?> - <?= $row["type"] ?> - <?= $row["memory"] ?> - <?= $row["hd"] ?> - €<?= $row["prijs"] ?></p>
 
-use App\Entity\Vacation;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-
-class VacationType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('name', TextType::class)
-            ->add('startDate', DateType::class, ['widget' => 'single_text'])
-            ->add('endDate', DateType::class, ['widget' => 'single_text']);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(['data_class' => Vacation::class]);
-    }
-}
+<form method="post">
+  <button type="submit">Delete</button>
+  <a href="read.php">Back</a>
+</form>
