@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gebruiker toevoegen{% endblock %}
+
+{% block body %}
+<h1 class="h3 mb-3">Gebruiker toevoegen</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary mt-2">Opslaan</button>
+            <a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary mt-2">Annuleren</a>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

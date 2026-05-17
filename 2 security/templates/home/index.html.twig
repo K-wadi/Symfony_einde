@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h3">Welkom bij de security-oefening</h1>
+
+        {% if app.user %}
+            <p class="mb-2">Je bent ingelogd als <strong>{{ app.user.fullName }}</strong> ({{ app.user.userIdentifier }}).</p>
+
+            {# Opdracht 3.1: rollen tonen met loop (getRoles = array) #}
+            <h2 class="h5 mt-4">Jouw rollen</h2>
+            <ul class="list-group list-group-flush mb-0">
+                {% for role in app.user.roles %}
+                    <li class="list-group-item">
+                        <i class="bi bi-tag"></i> {{ role }}
+                    </li>
+                {% else %}
+                    <li class="list-group-item text-muted">Geen rollen gevonden.</li>
+                {% endfor %}
+            </ul>
+
+            <p class="small text-muted mt-3">
+                Tip opdracht 3.1: zet in phpMyAdmin bij een user in kolom <code>roles</code> de waarde
+                <code>["ROLE_ADMIN"]</code> en log opnieuw in.
+            </p>
+        {% else %}
+            <p>Je bent nog niet ingelogd.</p>
+            <a href="{{ path('app_register') }}" class="btn btn-primary me-2">Registreren</a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Inloggen</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
