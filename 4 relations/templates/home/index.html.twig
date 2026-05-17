@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<h1 class="h3 mb-4">Opdracht Relations + Custom Forms</h1>
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-primary text-white">Many-to-Many</div>
+            <div class="card-body">
+                <ul>
+                    <li><a href="{{ path('app_show_information_books') }}">Book ↔ Author (relatie 1)</a></li>
+                    <li><a href="{{ path('app_show_information_students') }}">Student ↔ Group (relatie 2)</a></li>
+                </ul>
+                <p class="small text-muted mb-0">Na migrate: <code>php bin/console app:seed-relations</code></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-warning">Custom forms</div>
+            <div class="card-body">
+                <ul>
+                    <li><a href="{{ path('app_pizza_new_simple') }}">Pizza – {{ '{{ form(form) }}' }}</a></li>
+                    <li><a href="{{ path('app_pizza_new') }}">Pizza – form_rows</a></li>
+                    <li><a href="{{ path('app_customer_new') }}">Customer – handmatige Twig</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
