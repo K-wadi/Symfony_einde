@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin{% endblock %}
+{% block body %}
+<h1 class="h3">Admin dashboard</h1>
+<div class="row g-3">
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h2 class="h6">Patiënten</h2><p class="display-6">{{ patientCount }}</p></div></div>
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h2 class="h6">Specialisten</h2><p class="display-6">{{ specialistCount }}</p></div></div>
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h2 class="h6">Nieuws</h2><p class="display-6">{{ newsCount }}</p></div></div>
+</div>
+{% endblock %}

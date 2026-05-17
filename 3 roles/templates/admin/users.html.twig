@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block title %}Gebruikersbeheer{% endblock %}
+{% block body %}
+<h1 class="h3">Patiënten en specialisten</h1>
+<h2 class="h5">Patiënten</h2>
+<table class="table table-sm bg-white shadow-sm mb-4">
+    <thead><tr><th>Naam</th><th>E-mail</th><th>Plaats</th></tr></thead>
+    <tbody>
+    {% for p in patients %}
+        <tr><td>{{ p.fullName }}</td><td>{{ p.email }}</td><td>{{ p.city }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+<h2 class="h5">Specialisten</h2>
+<table class="table table-sm bg-white shadow-sm">
+    <thead><tr><th>Naam</th><th>E-mail</th><th>Specialisatie</th></tr></thead>
+    <tbody>
+    {% for s in specialists %}
+        <tr><td>{{ s.fullName }}</td><td>{{ s.email }}</td><td>{{ s.specialization }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

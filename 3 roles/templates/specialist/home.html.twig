@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}Specialist home{% endblock %}
+{% block body %}
+<h1 class="h3">Welkom, Dr. {{ app.user.fullName }}</h1>
+<p>Specialisatie: <strong>{{ app.user.specialization }}</strong></p>
+<a href="{{ path('app_specialist_appointment_new') }}" class="btn btn-success mb-3">Nieuwe afspraak</a>
+<h2 class="h5">Komende afspraken</h2>
+<ul class="list-group shadow-sm">
+{% for a in upcoming %}
+    <li class="list-group-item d-flex justify-content-between">
+        <span>{{ a.patient.fullName }}</span>
+        <span>{{ a.scheduledAt|date('d-m-Y H:i') }}</span>
+    </li>
+{% else %}
+    <li class="list-group-item text-muted">Geen afspraken.</li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}Profiel{% endblock %}
+{% block body %}
+<h1 class="h3">Profiel bekijken / aanpassen</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        {{ form_start(form) }}{{ form_widget(form) }}
+        <button class="btn btn-success mt-2">Opslaan</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

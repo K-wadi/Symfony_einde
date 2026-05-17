@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Welkom bezoeker{% endblock %}
+{% block body %}
+<div class="card shadow-sm border-success">
+    <div class="card-body p-4">
+        <h1 class="h3">Welkom bij De snelle ingreep</h1>
+        <p class="lead">Ziekenhuis afspraken-app – specialisten plannen afspraken met patiënten.</p>
+        <p>Als bezoeker kun je:</p>
+        <ul>
+            <li>Je registreren als <strong>patiënt</strong></li>
+            <li>Inloggen als patiënt, specialist of admin</li>
+        </ul>
+        <a href="{{ path('app_register') }}" class="btn btn-success me-2">Registreren als patiënt</a>
+        <a href="{{ path('app_login') }}" class="btn btn-outline-success">Inloggen</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Afspraken beheren{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between mb-3">
+    <h1 class="h3 mb-0">Afspraken beheren</h1>
+    <a href="{{ path('app_specialist_appointment_new') }}" class="btn btn-success">Nieuwe afspraak</a>
+</div>
+<table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-success">
+        <tr><th>Patiënt</th><th>Datum</th><th>Opmerkingen</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for a in appointments %}
+        <tr>
+            <td>{{ a.patient.fullName }}</td>
+            <td>{{ a.scheduledAt|date('d-m-Y H:i') }}</td>
+            <td>{{ a.notes ?: '-' }}</td>
+            <td class="text-nowrap">
+                <a href="{{ path('app_specialist_appointment_edit', {id: a.id}) }}" class="btn btn-sm btn-warning">Bewerken</a>
+                <form method="post" action="{{ path('app_specialist_appointment_delete', {id: a.id}) }}" class="d-inline" onsubmit="return confirm('Verwijderen?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ a.id) }}">
+                    <button class="btn btn-sm btn-danger">Verwijderen</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

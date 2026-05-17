@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block title %}Registreren{% endblock %}
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white"><h1 class="h4 mb-0">Registratie patiënt</h1></div>
+            <div class="card-body">
+                {{ form_start(registrationForm) }}
+                    <div class="row">
+                        <div class="col-md-6">{{ form_row(registrationForm.firstName) }}</div>
+                        <div class="col-md-6">{{ form_row(registrationForm.lastName) }}</div>
+                    </div>
+                    {{ form_row(registrationForm.address) }}
+                    <div class="row">
+                        <div class="col-md-4">{{ form_row(registrationForm.zipCode) }}</div>
+                        <div class="col-md-8">{{ form_row(registrationForm.city) }}</div>
+                    </div>
+                    {{ form_row(registrationForm.email) }}
+                    {{ form_row(registrationForm.plainPassword) }}
+                    {{ form_row(registrationForm.agreeTerms) }}
+                    <button class="btn btn-success">Account aanmaken</button>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
