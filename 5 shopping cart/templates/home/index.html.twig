@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Producten{% endblock %}
+
+{% block body %}
+<h1 class="h3 mb-4">Smartphones &amp; accessoires</h1>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+    {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ product.imageUrl }}" class="card-img-top img-fluid" alt="{{ product.name }}">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="h5 card-title">{{ product.name }}</h2>
+                    <p class="card-text text-muted flex-grow-1">{{ product.description }}</p>
+                    <p class="fw-bold fs-5">&euro; {{ product.price }}</p>
+                    <a href="{{ path('app_product_add', {id: product.id}) }}" class="btn btn-primary mt-auto">
+                        <i class="bi bi-cart-plus"></i> Buy
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted">Geen producten. Voer fixtures uit: <code>php bin/console doctrine:fixtures:load</code></p>
+    {% endfor %}
+</div>
+{% endblock %}
