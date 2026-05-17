@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Details {{ smartphone.type }}{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0"><i class="bi bi-phone"></i> {{ smartphone.type }}</h1>
+    <a href="{{ path('app_smartphone_index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Terug naar overzicht
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="row g-0">
+        <div class="col-md-4 bg-white d-flex align-items-center justify-content-center p-3">
+            {% if smartphone.picture %}
+                <img src="{{ asset('uploads/pictures/' ~ smartphone.picture) }}" alt="{{ smartphone.type }}" class="img-fluid rounded">
+            {% else %}
+                <p class="text-muted mb-0"><i class="bi bi-image fs-1"></i><br>Geen afbeelding</p>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Type</dt>
+                    <dd class="col-sm-9">{{ smartphone.type }}</dd>
+
+                    <dt class="col-sm-3">Geheugen</dt>
+                    <dd class="col-sm-9">{{ smartphone.memory }} GB</dd>
+
+                    <dt class="col-sm-3">Kleur</dt>
+                    <dd class="col-sm-9">{{ smartphone.color }}</dd>
+
+                    <dt class="col-sm-3">Prijs</dt>
+                    <dd class="col-sm-9">&euro; {{ smartphone.price|number_format(2, ',', '.') }}</dd>
+
+                    <dt class="col-sm-3">Vendor</dt>
+                    <dd class="col-sm-9">{{ smartphone.vendor.name }}</dd>
+
+                    <dt class="col-sm-3">Beschrijving</dt>
+                    <dd class="col-sm-9">{{ smartphone.description ?: '-' }}</dd>
+                </dl>
+
+                <div class="mt-3">
+                    <a href="{{ path('app_smartphone_edit', {id: smartphone.id}) }}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Bewerken
+                    </a>
+                    <a href="{{ path('app_smartphone_delete', {id: smartphone.id}) }}" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Verwijderen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smartphones overzicht{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0"><i class="bi bi-list-ul"></i> Smartphones</h1>
+    <a href="{{ path('app_smartphone_new') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nieuwe smartphone
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-primary">
+            <tr>
+                {# nr = oplopend nummer, GEEN database-id (opdracht PDF) #}
+                <th scope="col">Nr</th>
+                <th scope="col">Type</th>
+                <th scope="col">Geheugen</th>
+                <th scope="col">Kleur</th>
+                <th scope="col">Prijs</th>
+                <th scope="col">Vendor</th>
+                <th scope="col" class="text-end">Acties</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for smartphone in smartphones %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ smartphone.type }}</td>
+                    <td>{{ smartphone.memory }} GB</td>
+                    <td>{{ smartphone.color }}</td>
+                    <td>&euro; {{ smartphone.price|number_format(2, ',', '.') }}</td>
+                    <td>{{ smartphone.vendor.name }}</td>
+                    <td class="text-end text-nowrap">
+                        <a href="{{ path('app_smartphone_show', {id: smartphone.id}) }}" class="btn btn-sm btn-outline-primary" title="Details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{{ path('app_smartphone_edit', {id: smartphone.id}) }}" class="btn btn-sm btn-outline-warning" title="Bewerken">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ path('app_smartphone_delete', {id: smartphone.id}) }}" class="btn btn-sm btn-outline-danger" title="Verwijderen">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">Nog geen smartphones. Voeg er een toe.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

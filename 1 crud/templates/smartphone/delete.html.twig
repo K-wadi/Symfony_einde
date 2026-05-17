@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Smartphone verwijderen{% endblock %}
+
+{% block body %}
+<h1 class="h3 mb-3 text-danger"><i class="bi bi-trash"></i> Smartphone verwijderen</h1>
+
+{# Eerst details tonen, daarna pas verwijderen (opdracht PDF) #}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-danger text-white">Weet je het zeker?</div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9">{{ smartphone.type }}</dd>
+
+            <dt class="col-sm-3">Geheugen</dt>
+            <dd class="col-sm-9">{{ smartphone.memory }} GB</dd>
+
+            <dt class="col-sm-3">Kleur</dt>
+            <dd class="col-sm-9">{{ smartphone.color }}</dd>
+
+            <dt class="col-sm-3">Prijs</dt>
+            <dd class="col-sm-9">&euro; {{ smartphone.price|number_format(2, ',', '.') }}</dd>
+
+            <dt class="col-sm-3">Vendor</dt>
+            <dd class="col-sm-9">{{ smartphone.vendor.name }}</dd>
+
+            <dt class="col-sm-3">Beschrijving</dt>
+            <dd class="col-sm-9">{{ smartphone.description ?: '-' }}</dd>
+        </dl>
+
+        {% if smartphone.picture %}
+            <img src="{{ asset('uploads/pictures/' ~ smartphone.picture) }}" alt="{{ smartphone.type }}" class="img-thumbnail mt-3" style="max-height: 200px;">
+        {% endif %}
+    </div>
+</div>
+
+<form method="post" action="{{ path('app_smartphone_delete', {id: smartphone.id}) }}" class="d-flex justify-content-between">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ smartphone.id) }}">
+    <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Ja, verwijderen
+    </button>
+    <a href="{{ path('app_smartphone_index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</form>
+{% endblock %}
