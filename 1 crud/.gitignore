@@ -1,7 +1,0 @@
-
-/.env.local
-/.env.local.php
-/.env.*.local
-/var/
-/vendor/
-/public/uploads/

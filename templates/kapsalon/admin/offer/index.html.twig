@@ -1,0 +1,20 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Aanbiedingen',
+    actions: '<a href="' ~ path('kapsalon_admin_offer_new') ~ '" class="btn btn-olive">Nieuw</a>'
+} only %}
+<div class="row g-3">
+{% for o in offers %}
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-body">
+<h5>{{ o.title }}</h5>
+<p class="text-muted">{{ o.description }}</p>
+<span class="badge {{ o.active ? 'bg-olive' : 'bg-secondary' }}">{{ o.active ? 'Actief' : 'Inactief' }}</span>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

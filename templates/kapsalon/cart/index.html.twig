@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block title %}Winkelwagen{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Winkelwagen',
+    subtitle: count ~ ' product(en) in uw mandje',
+    actions: count > 0 ? '<a href="' ~ path('kapsalon_checkout') ~ '" class="btn btn-olive">Afrekenen</a>' : ''
+} only %}
+
+<div class="table-card">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th>Product</th><th class="text-center">Aantal</th><th class="text-end">Subtotaal</th></tr></thead>
+<tbody>
+{% for line in lines %}
+<tr>
+<td><strong>{{ line.product.name }}</strong><br><small class="text-muted">{{ line.product.category }}</small></td>
+<td class="text-center">{{ line.quantity }}</td>
+<td class="text-end">€ {{ (line.product.priceCents * line.quantity / 100)|number_format(2, ',', '.') }}</td>
+</tr>
+{% else %}
+<tr><td colspan="3" class="text-center text-muted py-5">Uw winkelwagen is leeg. <a href="{{ path('kapsalon_products') }}">Bekijk producten</a></td></tr>
+{% endfor %}
+</tbody>
+{% if lines|length %}
+<tfoot class="table-light"><tr><th colspan="2">Totaal</th><th class="text-end fs-5 text-olive">€ {{ (total_cents / 100)|number_format(2, ',', '.') }}</th></tr></tfoot>
+{% endif %}
+</table>
+</div>
+{% if count > 0 %}
+<div class="d-flex justify-content-end gap-2 mt-3">
+<a href="{{ path('kapsalon_products') }}" class="btn btn-outline-secondary">Verder winkelen</a>
+<a href="{{ path('kapsalon_checkout') }}" class="btn btn-olive btn-lg">Afrekenen</a>
+</div>
+{% endif %}
+{% endblock %}

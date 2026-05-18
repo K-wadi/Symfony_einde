@@ -1,14 +1,6 @@
 doctrine:
     dbal:
-        driver: 'pdo_mysql'
-        host: '127.0.0.1'
-        port: 3306
-        dbname: 'webshop'
-        user: 'root'
-        password: ''
-        charset: 'utf8mb4'
-        server_version: '8.0'
-
+        url: '%env(resolve:DATABASE_URL)%'
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
     orm:
@@ -29,7 +21,6 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:

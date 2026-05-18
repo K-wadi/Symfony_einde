@@ -1,0 +1,17 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Rooster personeel' } only %}
+<div class="content-card p-4">
+{% for name, appts in schedule %}
+<h3 class="h6 text-olive mt-3 mb-2">{{ name }}</h3>
+<ul class="list-unstyled mb-0">
+{% for a in appts %}
+<li class="mb-1 small"><i class="bi bi-calendar-event me-1"></i>{{ a.startsAt|date('d-m-Y H:i') }} — {{ a.customerName }} ({{ a.treatment.name }})</li>
+{% else %}
+<li class="text-muted small">Geen afspraken gepland</li>
+{% endfor %}
+</ul>
+<hr>
+{% endfor %}
+</div>
+{% endblock %}

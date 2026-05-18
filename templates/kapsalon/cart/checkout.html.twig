@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Afrekenen{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Afrekenen', subtitle: 'Ophalen in de winkel na bestelling.' } only %}
+<div class="row g-4">
+<div class="col-lg-4 order-lg-2">
+<div class="content-card p-4">
+<h2 class="h5">Overzicht</h2>
+<p class="fs-3 fw-bold text-olive mb-0">€ {{ (total_cents / 100)|number_format(2, ',', '.') }}</p>
+<p class="small text-muted">Betaling bij afhalen in de salon</p>
+</div>
+</div>
+<div class="col-lg-8 order-lg-1">
+<div class="content-card p-4">
+{{ form_start(form) }}
+{{ form_row(form.customerName) }}
+{{ form_row(form.customerEmail) }}
+{{ form_row(form.deliveryMethod) }}
+{{ form_row(form.acceptTerms) }}
+<button class="btn btn-olive btn-lg" type="submit"><i class="bi bi-check2-circle me-1"></i>Bestelling plaatsen</button>
+{{ form_end(form) }}
+</div>
+</div>
+</div>
+{% endblock %}

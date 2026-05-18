@@ -1,0 +1,14 @@
+{{ form_start(form) }}
+<div class="row g-3">
+<div class="col-md-6">{{ form_row(form.customerName) }}</div>
+<div class="col-md-6">{{ form_row(form.customerEmail) }}</div>
+<div class="col-md-6">{{ form_row(form.customerPhone) }}</div>
+<div class="col-md-6">{{ form_row(form.treatment) }}</div>
+<div class="col-md-6">{{ form_row(form.employee) }}</div>
+<div class="col-md-6">{{ form_row(form.date) }}</div>
+<div class="col-12">{{ form_row(form.slot) }}</div>
+<p class="small text-muted col-12">Door te reserveren gaat u akkoord met onze <a href="{{ path('kapsalon_terms') }}" target="_blank">algemene voorwaarden</a>.</p>
+<div class="col-12">{{ form_row(form.acceptTerms) }}</div>
+<div class="col-12">{{ form_row(form.submit, { label: 'Reserveren', attr: { class: 'btn btn-olive w-100' } }) }}</div>
+</div>
+{{ form_end(form) }}

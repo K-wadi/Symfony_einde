@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}Producten — Je haar zit goed{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Producten',
+    subtitle: 'Professionele haarverzorging — bestel online en haal op in de salon.'
+} only %}
+
+<div class="row g-4">
+{% for p in products %}
+<div class="col-sm-6 col-lg-4">
+<div class="card card-product h-100">
+<img src="{{ p.imageUrl|default('https://placehold.co/400x300/6b8e23/fff?text=Product') }}" alt="{{ p.name }}" class="card-img-top">
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">{{ p.name }}</h5>
+<p class="small text-muted mb-1"><span class="badge text-bg-secondary">{{ p.category }}</span></p>
+<p class="card-text flex-grow-1 small">{{ p.description }}</p>
+<p class="fw-bold fs-5 text-olive mb-3">€ {{ p.priceFormatted }}</p>
+<a href="{{ path('kapsalon_cart_add', {id: p.id}) }}" class="btn btn-olive w-100"><i class="bi bi-cart-plus me-1"></i>In winkelwagen</a>
+</div>
+</div>
+</div>
+{% else %}
+<div class="col-12"><div class="content-card p-5 text-center text-muted">Geen producten beschikbaar.</div></div>
+{% endfor %}
+</div>
+{% endblock %}

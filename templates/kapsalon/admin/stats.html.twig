@@ -1,0 +1,70 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block title %}Statistieken{% endblock %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Statistieken' } only %}
+
+<form method="get" class="content-card p-3 mb-4">
+<div class="row g-2 align-items-end">
+<div class="col-md-3"><label class="form-label">Van</label><input type="date" name="dateFrom" class="form-control" value="{{ date_from }}"></div>
+<div class="col-md-3"><label class="form-label">Tot</label><input type="date" name="dateTo" class="form-control" value="{{ date_to }}"></div>
+<div class="col-md-2"><button type="submit" class="btn btn-olive w-100">Filter</button></div>
+</div>
+</form>
+
+<div class="content-card p-4 mb-4">
+<h2 class="h5 mb-3">Verkoop in periode</h2>
+<canvas id="salesChart" height="100"></canvas>
+</div>
+
+<div class="row g-4">
+<div class="col-lg-6">
+<div class="content-card p-4 h-100">
+<h2 class="h5">Producten op klantgedrag</h2>
+<ul class="list-group list-group-flush">
+{% for product in suggested_products %}
+<li class="list-group-item d-flex justify-content-between"><span>{{ product.name }}</span><span>€ {{ product.priceFormatted }}</span></li>
+{% else %}
+<li class="list-group-item text-muted">Nog geen data</li>
+{% endfor %}
+</ul>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="content-card p-4 h-100">
+<h2 class="h5">Bezoekfrequentie</h2>
+<div class="table-responsive">
+<table class="table table-sm">
+<thead><tr><th>E-mail</th><th>Best.</th><th>Afspr.</th><th>Totaal</th></tr></thead>
+<tbody>
+{% for email, data in visit_frequency %}
+<tr><td class="small">{{ email }}</td><td>{{ data.orders }}</td><td>{{ data.appointments }}</td><td><strong>{{ data.total }}</strong></td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="content-card p-4 mt-4">
+<h2 class="h5">Bezoekers website</h2>
+<p>Paginaweergaven: <strong>{{ visit_count }}</strong> · GA: <code>{{ ga_id }}</code> (na cookie-toestemming)</p>
+<ul class="row list-unstyled mb-0">
+{% for path, cnt in paths %}
+<li class="col-md-6 small"><span class="text-muted">{{ path }}</span> — {{ cnt }}×</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const data = {{ monthly_sales|json_encode|raw }};
+new Chart(document.getElementById('salesChart'), {
+    type: 'bar',
+    data: { labels: Object.keys(data), datasets: [{ label: 'Omzet €', data: Object.values(data).map(c => c / 100), backgroundColor: '#6b8e23' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

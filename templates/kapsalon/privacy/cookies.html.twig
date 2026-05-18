@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block title %}Cookie-instellingen{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Cookie-instellingen', subtitle: 'Kies welke cookies u toestaat.' } only %}
+<form method="post" class="content-card p-4 col-lg-6">
+<div class="form-check mb-3 p-3 border rounded">
+<input class="form-check-input" type="radio" name="cookie_choice" id="essential" value="essential" {% if current == 'essential' or current is null %}checked{% endif %}>
+<label class="form-check-label" for="essential"><strong>Alleen noodzakelijk</strong><br><span class="small text-muted">Sessie en winkelwagen</span></label>
+</div>
+<div class="form-check mb-4 p-3 border rounded">
+<input class="form-check-input" type="radio" name="cookie_choice" id="all" value="all" {% if current == 'all' %}checked{% endif %}>
+<label class="form-check-label" for="all"><strong>Alles accepteren</strong><br><span class="small text-muted">Inclusief Google Analytics</span></label>
+</div>
+<button type="submit" class="btn btn-olive">Opslaan</button>
+</form>
+{% endblock %}

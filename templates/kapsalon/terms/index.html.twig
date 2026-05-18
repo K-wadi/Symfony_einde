@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Algemene voorwaarden{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Algemene voorwaarden' } only %}
+<div class="content-card p-4 p-lg-5">
+<p class="text-muted">Deze voorwaarden gelden voor alle overeenkomsten tussen Kapsalon Je haar zit goed en de klant.</p>
+<h2 class="h5 text-olive mt-4">Toepasselijkheid</h2>
+<p>Deze algemene voorwaarden zijn van toepassing op de totstandkoming en uitvoering van alle overeenkomsten in de uiterlijke verzorgingsbranche.</p>
+<h2 class="h5 text-olive mt-4">Betaling en annulering</h2>
+<p>Betaling contant of per pin na de behandeling. Annuleren <strong>ten minste 24 uur van tevoren</strong>.</p>
+<h2 class="h5 text-olive mt-4">Klachten</h2>
+<p>Binnen één week na de behandeling een klacht indienen (twee weken bij kleur/permanent).</p>
+<h2 class="h5 text-olive mt-4">Aansprakelijkheid</h2>
+<p>Wij werken met goed vakmanschap. Meld allergieën en medicijngebruik vooraf.</p>
+<p class="mt-4 mb-0"><a href="{{ path('kapsalon_privacy') }}">Privacystatement</a> · <a href="{{ path('app_home') }}">Home</a></p>
+</div>
+{% endblock %}

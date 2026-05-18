@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row g-4">
+    <aside class="col-lg-3">
+        <div class="content-card admin-sidebar p-3">
+            <h2 class="h6 text-uppercase text-muted mb-3">Beheer</h2>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'kapsalon_admin_dashboard' ? 'active' : '' }}" href="{{ path('kapsalon_admin_dashboard') }}">Dashboard</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_admin_employee' ? 'active' : '' }}" href="{{ path('kapsalon_admin_employees') }}">Medewerkers</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_admin_appointment' ? 'active' : '' }}" href="{{ path('kapsalon_admin_appointments') }}">Afspraken</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_admin_treatment' ? 'active' : '' }}" href="{{ path('kapsalon_admin_treatments') }}">Behandelingen</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_admin_offer' ? 'active' : '' }}" href="{{ path('kapsalon_admin_offers') }}">Aanbiedingen</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_admin_timeblock' ? 'active' : '' }}" href="{{ path('kapsalon_admin_timeblocks') }}">Tijdsblokken</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'kapsalon_admin_schedule' ? 'active' : '' }}" href="{{ path('kapsalon_admin_schedule') }}">Rooster</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'kapsalon_admin_stats' ? 'active' : '' }}" href="{{ path('kapsalon_admin_stats') }}">Statistieken</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'kapsalon_admin_sms_log' ? 'active' : '' }}" href="{{ path('kapsalon_admin_sms_log') }}">Verzonden SMS</a>
+            </div>
+            <hr class="my-3">
+            <a class="btn btn-outline-dark btn-sm w-100" href="{{ path('app_home') }}">Naar website</a>
+        </div>
+    </aside>
+    <div class="col-lg-9">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

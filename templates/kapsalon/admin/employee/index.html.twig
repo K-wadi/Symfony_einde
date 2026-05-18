@@ -1,0 +1,26 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Medewerkers',
+    actions: '<a href="' ~ path('kapsalon_admin_employee_new') ~ '" class="btn btn-olive">Nieuwe medewerker</a>'
+} only %}
+<div class="table-card">
+<table class="table table-hover mb-0">
+<thead><tr><th>Naam</th><th>Specialisatie</th><th>E-mail login</th><th></th></tr></thead>
+<tbody>
+{% for e in employees %}
+<tr>
+<td>{{ e.name }}</td>
+<td>{{ e.specialization }}</td>
+<td>{{ e.user ? e.user.email : '—' }}</td>
+<td class="text-end">
+<form method="post" action="{{ path('kapsalon_admin_employee_delete', {id:e.id}) }}" class="d-inline" onsubmit="return confirm('Verwijderen?');">
+<button class="btn btn-sm btn-outline-danger">Verwijder</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

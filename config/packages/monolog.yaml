@@ -1,6 +1,8 @@
+# Apart kanaal voor SMS-log (var/log/sms.log)
 monolog:
     channels:
-        - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - deprecation
+        - sms
 
 when@dev:
     monolog:
@@ -9,7 +11,12 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: ["!event"]
+                channels: ["!event", "!sms"]
+            sms:
+                type: stream
+                path: "%kernel.logs_dir%/sms.log"
+                level: info
+                channels: [sms]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:

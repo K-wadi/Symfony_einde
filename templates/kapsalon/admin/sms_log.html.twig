@@ -1,0 +1,20 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Verzonden SMS', subtitle: 'Bevestigingsberichten (lokaal opgeslagen).' } only %}
+<div class="table-card">
+<table class="table table-sm mb-0">
+<thead><tr><th>Tijd</th><th>Telefoon</th><th>Bericht</th></tr></thead>
+<tbody>
+{% for sms in messages %}
+<tr>
+<td class="text-nowrap">{{ sms.sentAt|date('d-m-Y H:i') }}</td>
+<td>{{ sms.phone }}</td>
+<td><small>{{ sms.message|slice(0, 120) }}{% if sms.message|length > 120 %}…{% endif %}</small></td>
+</tr>
+{% else %}
+<tr><td colspan="3" class="text-center text-muted py-4">Nog geen SMS</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

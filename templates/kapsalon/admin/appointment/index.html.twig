@@ -1,0 +1,29 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Afspraken',
+    actions: '<a href="' ~ path('kapsalon_admin_appointment_new') ~ '" class="btn btn-olive"><i class="bi bi-plus-lg"></i> Nieuwe afspraak</a>'
+} only %}
+<div class="table-card">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th>Klant</th><th>E-mail</th><th>Datum</th><th>Status</th><th class="text-end">Acties</th></tr></thead>
+<tbody>
+{% for a in appointments %}
+<tr>
+<td>{{ a.customerName }}</td>
+<td>{{ a.customerEmail }}</td>
+<td>{{ a.startsAt|date('d-m-Y H:i') }}</td>
+<td><span class="badge {{ a.status == 'planned' ? 'badge-planned' : 'badge-cancelled' }}">{{ a.status }}</span></td>
+<td class="text-end text-nowrap">
+<a href="{{ path('kapsalon_admin_appointment_edit', {id:a.id}) }}" class="btn btn-sm btn-outline-secondary">Bewerk</a>
+<form method="post" action="{{ path('kapsalon_admin_appointment_cancel', {id:a.id}) }}" class="d-inline"><button class="btn btn-sm btn-warning">Annuleer</button></form>
+<form method="post" action="{{ path('kapsalon_admin_appointment_delete', {id:a.id}) }}" class="d-inline" onsubmit="return confirm('Verwijderen?');"><button class="btn btn-sm btn-danger">Verwijder</button></form>
+</td>
+</tr>
+{% else %}
+<tr><td colspan="5" class="text-center text-muted py-4">Geen afspraken</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

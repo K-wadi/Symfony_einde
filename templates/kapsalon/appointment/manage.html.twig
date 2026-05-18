@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Afspraak beheren{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Uw afspraak', subtitle: appointment.customerName } only %}
+<div class="row g-4">
+<div class="col-lg-6">
+<div class="content-card p-4">
+<h2 class="h5 mb-3">Gegevens</h2>
+<ul class="list-unstyled mb-0">
+<li class="mb-2"><strong>Behandeling:</strong> {{ appointment.treatment.name }}</li>
+<li class="mb-2"><strong>Kapster:</strong> {{ appointment.employee.name }}</li>
+<li class="mb-2"><strong>Datum/tijd:</strong> {{ appointment.startsAt|date('d-m-Y H:i') }}</li>
+<li class="mb-2"><strong>Status:</strong>
+<span class="badge {{ appointment.status == 'planned' ? 'badge-planned' : 'badge-cancelled' }}">{{ appointment.status }}</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="content-card p-4 mb-3">
+<h2 class="h5">Tijd wijzigen</h2>
+<form method="post">
+<input type="hidden" name="action" value="reschedule">
+<input type="datetime-local" name="new_datetime" class="form-control mb-3" required>
+<button class="btn btn-olive" type="submit">Wijziging doorgeven</button>
+</form>
+</div>
+<div class="content-card p-4 border border-danger">
+<h2 class="h5 text-danger">Annuleren</h2>
+<form method="post" onsubmit="return confirm('Weet u zeker dat u wilt annuleren?');">
+<input type="hidden" name="action" value="cancel">
+<button class="btn btn-outline-danger" type="submit">Afspraak annuleren</button>
+</form>
+</div>
+</div>
+</div>
+{% endblock %}

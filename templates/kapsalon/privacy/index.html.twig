@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Privacy{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Privacystatement' } only %}
+<div class="content-card p-4 p-lg-5">
+<p>Kapsalon <strong>Je haar zit goed</strong> verwerkt persoonsgegevens conform de AVG.</p>
+<h2 class="h5 text-olive mt-4">Welke gegevens</h2>
+<p>Naam, e-mailadres, telefoonnummer en afspraak- of bestelgegevens die u zelf invult.</p>
+<h2 class="h5 text-olive mt-4">Doel</h2>
+<p>Plannen van afspraken, afhandelen van bestellingen en klantcommunicatie.</p>
+<h2 class="h5 text-olive mt-4">Cookies</h2>
+<p>Analytische cookies alleen na uw keuze via <a href="{{ path('kapsalon_cookie_settings') }}">cookie-instellingen</a>.</p>
+<h2 class="h5 text-olive mt-4">Rechten</h2>
+<p>Inzage, correctie of verwijdering via het <a href="{{ path('kapsalon_contact') }}">contactformulier</a>.</p>
+<hr class="my-4">
+<p class="mb-0">
+<a href="{{ path('kapsalon_terms') }}">Algemene voorwaarden</a> ·
+<a href="{{ path('kapsalon_cookie_settings') }}">Cookies</a> ·
+<a href="{{ path('app_home') }}">Home</a>
+</p>
+</div>
+{% endblock %}

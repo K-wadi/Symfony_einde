@@ -1,5 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
+    form_themes: ['bootstrap_5_layout.html.twig']
+    globals:
+        # Google Analytics-id uit .env (alleen na cookie-toestemming in template)
+        google_analytics_id: '%google_analytics_id%'
 
 when@test:
     twig:

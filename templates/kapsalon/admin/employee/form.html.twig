@@ -1,0 +1,14 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Medewerker' } only %}
+<div class="content-card p-4 col-lg-6">
+{{ form_start(form) }}
+{{ form_row(form.name) }}
+{{ form_row(form.specialization) }}
+{{ form_row(form.email) }}
+{{ form_row(form.password) }}
+<button class="btn btn-olive" type="submit">Opslaan</button>
+<a href="{{ path('kapsalon_admin_employees') }}" class="btn btn-link">Annuleren</a>
+{{ form_end(form) }}
+</div>
+{% endblock %}

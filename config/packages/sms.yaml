@@ -1,0 +1,5 @@
+# Koppelt SmsNotificationService aan het sms-logbestand
+services:
+    App\Service\SmsNotificationService:
+        arguments:
+            $smsLogger: '@monolog.logger.sms'

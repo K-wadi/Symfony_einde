@@ -1,0 +1,29 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block title %}Admin dashboard{% endblock %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Dashboard eigenaresse' } only %}
+<div class="row g-3 mb-4">
+<div class="col-sm-6 col-lg-4">
+<div class="stat-card">
+<p class="text-muted small mb-1">Bezoekers</p>
+<p class="stat-value mb-0">{{ visit_count }}</p>
+</div>
+</div>
+<div class="col-sm-6 col-lg-4">
+<div class="stat-card">
+<p class="text-muted small mb-1">Afspraken</p>
+<p class="stat-value mb-0">{{ appointment_count }}</p>
+</div>
+</div>
+</div>
+<div class="content-card p-4">
+<h2 class="h5 mb-3">Verkoop per maand</h2>
+<ul class="list-group list-group-flush">
+{% for month, cents in monthly_sales %}
+<li class="list-group-item d-flex justify-content-between"><span>{{ month }}</span><strong>€ {{ (cents/100)|number_format(2, ',', '.') }}</strong></li>
+{% else %}
+<li class="list-group-item text-muted">Nog geen verkopen</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

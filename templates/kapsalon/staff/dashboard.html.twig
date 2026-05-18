@@ -1,0 +1,8 @@
+{% extends 'kapsalon/staff/_layout.html.twig' %}
+{% block staff_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Medewerker dashboard' } only %}
+<div class="content-card p-4">
+<p class="mb-3">Welkom terug. Bekijk en beheer uw afspraken.</p>
+<a href="{{ path('kapsalon_staff_appointments') }}" class="btn btn-olive btn-lg"><i class="bi bi-calendar3 me-1"></i> Mijn afspraken</a>
+</div>
+{% endblock %}

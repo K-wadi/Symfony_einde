@@ -1,0 +1,14 @@
+{% extends 'kapsalon/staff/_layout.html.twig' %}
+{% block staff_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Afspraak bewerken' } only %}
+<div class="content-card p-4 col-lg-6 mb-3">
+<form method="post" class="row g-3">
+<div class="col-12"><label class="form-label">Naam</label><input name="customerName" value="{{ appointment.customerName }}" class="form-control"></div>
+<div class="col-12"><label class="form-label">Datum/tijd</label><input name="startsAt" type="datetime-local" value="{{ appointment.startsAt|date('Y-m-d\\TH:i') }}" class="form-control"></div>
+<div class="col-12"><button class="btn btn-olive" type="submit">Opslaan</button></div>
+</form>
+</div>
+<form method="post" action="{{ path('kapsalon_staff_appointment_cancel', {id: appointment.id}) }}" onsubmit="return confirm('Annuleren?');">
+<button class="btn btn-outline-danger" type="submit">Afspraak annuleren</button>
+</form>
+{% endblock %}

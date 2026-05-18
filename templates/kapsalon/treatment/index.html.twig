@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Behandelingen{% endblock %}
+{% block body %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Behandelingen', subtitle: 'Kies de behandeling die bij u past.' } only %}
+<div class="row g-4">
+{% for t in treatments %}
+<div class="col-md-6 col-lg-4">
+<div class="card h-100">
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-start mb-2">
+<h5 class="card-title mb-0">{{ t.name }}</h5>
+<span class="badge bg-olive">{{ t.durationMinutes }} min</span>
+</div>
+<p class="text-muted">{{ t.description }}</p>
+<p class="fs-4 fw-bold text-olive mb-0">€ {{ t.priceFormatted }}</p>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+<button type="button" class="btn btn-olive mt-4" data-bs-toggle="modal" data-bs-target="#reserveModal"><i class="bi bi-calendar-plus me-1"></i> Afspraak maken</button>
+{% endblock %}

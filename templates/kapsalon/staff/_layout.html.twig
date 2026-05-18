@@ -1,0 +1,20 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row g-4">
+    <aside class="col-lg-3">
+        <div class="content-card admin-sidebar p-3">
+            <h2 class="h6 text-uppercase text-muted mb-3">Medewerker</h2>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') == 'kapsalon_staff_dashboard' ? 'active' : '' }}" href="{{ path('kapsalon_staff_dashboard') }}">Dashboard</a>
+                <a class="list-group-item list-group-item-action {{ app.request.attributes.get('_route') starts with 'kapsalon_staff_appointment' ? 'active' : '' }}" href="{{ path('kapsalon_staff_appointments') }}">Mijn afspraken</a>
+            </div>
+            <hr class="my-3">
+            <a class="btn btn-outline-dark btn-sm w-100" href="{{ path('app_home') }}">Naar website</a>
+        </div>
+    </aside>
+    <div class="col-lg-9">
+        {% block staff_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

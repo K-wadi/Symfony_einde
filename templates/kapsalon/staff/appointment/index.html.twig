@@ -1,0 +1,21 @@
+{% extends 'kapsalon/staff/_layout.html.twig' %}
+{% block staff_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with { title: 'Mijn afspraken' } only %}
+<div class="table-card">
+<table class="table table-hover mb-0">
+<thead><tr><th>Klant</th><th>Datum</th><th>Status</th><th></th></tr></thead>
+<tbody>
+{% for a in appointments %}
+<tr>
+<td>{{ a.customerName }}</td>
+<td>{{ a.startsAt|date('d-m-Y H:i') }}</td>
+<td><span class="badge {{ a.status == 'planned' ? 'badge-planned' : 'badge-cancelled' }}">{{ a.status }}</span></td>
+<td><a href="{{ path('kapsalon_staff_appointment_edit', {id: a.id}) }}" class="btn btn-sm btn-outline-secondary">Bewerk</a></td>
+</tr>
+{% else %}
+<tr><td colspan="4" class="text-center text-muted py-4">Geen afspraken</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

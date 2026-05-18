@@ -1,0 +1,17 @@
+{% extends 'kapsalon/admin/_layout.html.twig' %}
+{% block admin_content %}
+{% include 'kapsalon/_partials/page_header.html.twig' with {
+    title: 'Tijdsblokken',
+    actions: '<a href="' ~ path('kapsalon_admin_timeblock_new') ~ '" class="btn btn-olive">Nieuw blok</a>'
+} only %}
+<div class="table-card">
+<table class="table mb-0">
+<thead><tr><th>Kapster</th><th>Van</th><th>Tot</th></tr></thead>
+<tbody>
+{% for b in blocks %}
+<tr><td>{{ b.employee.name }}</td><td>{{ b.startAt|date('d-m-Y H:i') }}</td><td>{{ b.endAt|date('d-m-Y H:i') }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}
